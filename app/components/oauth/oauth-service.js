@@ -400,8 +400,10 @@ var oauth2 = oauth2 || {};
         
         this.checkAtHash = function(accessToken, idClaims) {
             if (!accessToken || !idClaims || !idClaims.at_hash ) return true;
-            
-            var tokenHash = sha256(accessToken, { asString: true });
+
+						var createHash = require('sha.js');
+						var sha256 = createHash('sha256');
+            var tokenHash = sha256.update(accessToken).digest('hex');
             
             var leftMostHalf = tokenHash.substr(0, tokenHash.length/2 );
 
@@ -409,7 +411,7 @@ var oauth2 = oauth2 || {};
             var atHash = tokenHashBase64.replace("+", "-").replace("/", "_").replace(/=/g, ""); 
 
             return (atHash == idClaims.at_hash);
-        }
+        };
 
         
         this.setup = function (options) {
